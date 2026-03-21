@@ -1,14 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import Axios from "axios";
 import { Typography, Button, Form, message, Input, Icon } from "antd";
 import Dropzone from "react-dropzone";
-import { useState } from "react";
-
+import { useSelector } from "react-redux";
 const { TextArea } = Input;
 const { Title } = Typography;
 
 const PrivateOptions = [
-  { value: 0, label: "Priavte" },
+  { value: 0, label: "Private" },
   { value: 1, label: "Public" },
 ];
 
@@ -19,7 +18,8 @@ const CategoryOptions = [
   { value: 3, label: "Pets & Animals" },
 ];
 
-function VideoUploadPage() {
+function VideoUploadPage(props) {
+  const user = useSelector((state) => state.user);
   const [VideoTitle, setVideoTitle] = useState("");
   const [Description, setDescription] = useState("");
   const [Private, setPrivate] = useState(0);
@@ -41,6 +41,32 @@ function VideoUploadPage() {
 
   const onCategoryChange = (e) => {
     setCategory(e.currentTarget.value);
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const variables = {
+      writer: user.userData._id,
+      title: VideoTitle,
+      description: Description,
+      privacy: Private,
+      filePath: FilePath,
+      category: Category,
+      duration: Duration,
+      thumbnail: ThumbnailPath,
+    };
+
+    Axios.post("/api/video/uploadVideo", variables).then((response) => {
+      if (response.data.success) {
+        message.success("성공적으로 업로드를 했습니다.");
+
+        setTimeout(() => {
+          props.history.push("/");
+        }, 3000);
+      } else {
+        alert("비디오 업로드에 실패 했습니다.");
+      }
+    });
   };
 
   const onDrop = (files) => {
@@ -79,7 +105,7 @@ function VideoUploadPage() {
       <div style={{ textAlign: "center", marginBottom: "2rem" }}>
         <Title level={2}>Upload Video</Title>
       </div>
-      <Form onSubmit>
+      <Form onSubmit={onSubmit}>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           {/* Drop Zone */}
 
@@ -149,7 +175,7 @@ function VideoUploadPage() {
         <br />
         <br />
 
-        <Button type="primary" size="large" onClick>
+        <Button type="primary" size="large" onClick={onSubmit}>
           Submit
         </Button>
       </Form>
