@@ -8,15 +8,15 @@ const { TextArea } = Input;
 function SingleComment(props) {
   const user = useSelector((state) => state.user);
 
-  const [OpenReply, SetOpenReply] = useState(false);
-  const [CommentValue, SetCommentValue] = useState("");
+  const [OpenReply, setOpenReply] = useState(false);
+  const [CommentValue, setCommentValue] = useState("");
 
   const onClickReplyOpen = () => {
-    SetOpenReply(!OpenReply);
+    setOpenReply(!OpenReply);
   };
 
   const onHandleChange = (event) => {
-    SetCommentValue(event.currentTarget.value); //CommentValue
+    setCommentValue(event.currentTarget.value);
   };
 
   const onSubmit = (event) => {
@@ -32,7 +32,8 @@ function SingleComment(props) {
     Axios.post("/api/comment/saveComment", variables).then((response) => {
       if (response.data.success) {
         console.log(response.data.result);
-        SetCommentValue("");
+        setCommentValue("");
+        setOpenReply(false);
         props.refreshFunction(response.data.result);
       } else {
         alert("커멘트를 저장하지 못했습니다.");
