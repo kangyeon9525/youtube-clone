@@ -9,7 +9,6 @@ function LikeDislikes(props) {
   const [DislikeAction, setDislikeAction] = useState(null);
 
   let variable = {};
-
   if (props.video) {
     variable = { videoId: props.videoId, userId: props.userId };
   } else {
@@ -19,36 +18,26 @@ function LikeDislikes(props) {
   useEffect(() => {
     Axios.post("/api/like/getLikes", variable).then((response) => {
       if (response.data.success) {
-        // 얼마나 많은 좋아요를 받았는지
         setLikes(response.data.likes.length);
-
-        // 내가 이미 그 좋아요를 눌렀는지
         response.data.likes.map((like) => {
           if (like.userId === props.userId) {
             setLikeAction("liked");
           }
         });
-      } else {
-        alert("Likes에 정보를 가져오지는 못했습니다.");
       }
     });
 
     Axios.post("/api/like/getDislikes", variable).then((response) => {
       if (response.data.success) {
-        // 얼마나 많은 싫어요를 받았는지
         setDislikes(response.data.dislikes.length);
-
-        // 내가 이미 그 싫어요를 눌렀는지
         response.data.dislikes.map((dislike) => {
           if (dislike.userId === props.userId) {
             setDislikeAction("disliked");
           }
         });
-      } else {
-        alert("DisLike에 정보를 가져오지는 못했습니다.");
       }
     });
-  });
+  }, []); // 의존성 배열 추가 (무한 루프 방지)
 
   const onLike = () => {
     if (LikeAction === null) {
@@ -60,8 +49,6 @@ function LikeDislikes(props) {
             setDislikes(Dislikes - 1);
             setDislikeAction(null);
           }
-        } else {
-          alert("Like를 올리지 못하였습니다.");
         }
       });
     } else {
@@ -69,8 +56,6 @@ function LikeDislikes(props) {
         if (response.data.success) {
           setLikes(Likes - 1);
           setLikeAction(null);
-        } else {
-          alert("Like를 내리지 못하였습니다.");
         }
       });
     }
@@ -82,8 +67,6 @@ function LikeDislikes(props) {
         if (response.data.success) {
           setDislikes(Dislikes - 1);
           setDislikeAction(null);
-        } else {
-          alert("Dislike를 지우지 못했습니다.");
         }
       });
     } else {
@@ -95,37 +78,70 @@ function LikeDislikes(props) {
             setLikes(Likes - 1);
             setLikeAction(null);
           }
-        } else {
-          alert("Dislike를 올리지 못했습니다.");
         }
       });
     }
   };
 
   return (
-    <div>
-      <span key="comment-basic-like">
+    <div style={{ display: "flex", alignItems: "center" }}>
+      <span
+        key="comment-basic-like"
+        style={{ marginRight: "16px", display: "flex", alignItems: "center" }}
+      >
         <Tooltip title="Like">
           <Icon
             type="like"
             theme={LikeAction === "liked" ? "filled" : "outlined"}
             onClick={onLike}
+            /* 아이콘 크기 확대 */
+            style={{
+              fontSize: "22px",
+              cursor: "pointer",
+              color: LikeAction === "liked" ? "#065fd4" : "inherit",
+            }}
           />
         </Tooltip>
-        <span style={{ paddingLeft: "8px", cursor: "auto" }}>{Likes}</span>
+        <span
+          style={{
+            paddingLeft: "8px",
+            cursor: "auto",
+            fontSize: "16px",
+            fontWeight: "500",
+          }}
+        >
+          {Likes}
+        </span>
       </span>
-      &nbsp;&nbsp;
-      <span key="comment-basic-dislike">
+
+      <span
+        key="comment-basic-dislike"
+        style={{ display: "flex", alignItems: "center" }}
+      >
         <Tooltip title="Dislike">
           <Icon
             type="dislike"
             theme={DislikeAction === "disliked" ? "filled" : "outlined"}
             onClick={onDislike}
+            /* 아이콘 크기 확대 */
+            style={{
+              fontSize: "22px",
+              cursor: "pointer",
+              color: DislikeAction === "disliked" ? "#065fd4" : "inherit",
+            }}
           />
         </Tooltip>
-        <span style={{ paddingLeft: "8px", cursor: "auto" }}>{Dislikes}</span>
+        <span
+          style={{
+            paddingLeft: "8px",
+            cursor: "auto",
+            fontSize: "16px",
+            fontWeight: "500",
+          }}
+        >
+          {Dislikes}
+        </span>
       </span>
-      &nbsp;&nbsp;
     </div>
   );
 }
