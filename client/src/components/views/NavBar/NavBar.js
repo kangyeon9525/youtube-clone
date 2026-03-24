@@ -22,11 +22,9 @@ function NavBar() {
       style={{ position: "fixed", zIndex: 5, width: "100%" }}
     >
       <div className="menu__logo">
-        <img
-          src={logoImage}
-          alt="Logo"
-          style={{ height: "50px", display: "block" }}
-        />
+        <a href="/">
+          <img src={logoImage} alt="Logo" className="logo-img" />
+        </a>
       </div>
       <div className="menu__container">
         <div className="menu_left">
@@ -35,18 +33,18 @@ function NavBar() {
         <div className="menu_rigth">
           <RightMenu mode="horizontal" />
         </div>
-        <Button
-          className="menu__mobile-button"
-          type="primary"
-          onClick={showDrawer}
-        >
-          <Icon type="align-right" />
+
+        {/* 이 버튼이 CSS의 justify-content: flex-end에 의해 오른쪽으로 밀립니다 */}
+        <Button className="menu__mobile-button" onClick={showDrawer}>
+          <Icon type="menu" />{" "}
+          {/* align-right 대신 menu를 쓰면 더 유튜브 느낌이 납니다 */}
         </Button>
+
         <Drawer
-          title="Basic Drawer"
+          title="Menu"
           placement="right"
           className="menu_drawer"
-          closable={false}
+          closable={true} // X 버튼을 보이게 하면 사용자가 닫기 편합니다
           onClose={onClose}
           visible={visible}
         >

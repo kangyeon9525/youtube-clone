@@ -1,91 +1,105 @@
 @import "~antd/dist/antd.css";
 
 .menu {
-  padding: 0 20px;
-  border-bottom: solid 1px #e8e8e8;
-  overflow: auto;
-  box-shadow: 0 0 30px #f3f1f1;
+  padding: 0 16px; /* 유튜브 특유의 좁은 좌우 패딩 */
+  border-bottom: solid 1px #f0f0f0;
   background-color: white;
+  height: 56px; /* 유튜브 헤더 표준 높이 */
+  display: flex;
+  align-items: center;
 }
 
 .menu__logo {
-  width: auto;
   height: 100%;
-  float: left;
   display: flex;
   align-items: center;
-  padding: 8px 0;
+  margin-right: 8px;
 }
 
 .menu__logo a {
-  display: inline-block;
-  font-size: 20px;
-  padding: 19px 20px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
 }
 
-.menu__container .ant-menu-item {
-  padding: 0px 5px;
+.logo-img {
+  height: 40px; /* 로고 사이즈를 적절하게 제한 */
+  width: auto;
 }
 
-.menu__container .ant-menu-submenu-title {
-  padding: 10px 20px;
+.menu__container {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.menu__container .ant-menu-item a,
-.menu__container .ant-menu-submenu-title a {
-  padding: 10px 15px;
+/* Ant Design Menu 커스텀 */
+.ant-menu-horizontal {
+  border-bottom: none !important;
+  line-height: 54px;
 }
 
-.menu__container .ant-menu-horizontal {
-  border-bottom: none;
-}
-
-.menu__container .menu_left {
-  float: left;
-}
-
-.menu__container .menu_rigth {
-  float: right;
+.menu_left .ant-menu-item,
+.menu_rigth .ant-menu-item {
+  font-weight: 500;
+  color: #030303;
 }
 
 .menu__mobile-button {
-  float: right;
-  height: 32px;
-  padding: 6px;
-  margin-top: 8px;
-  display: none !important; /* use of important to overwrite ant-btn */
-  background: #3e91f7;
-}
-
-.menu_drawer .ant-drawer-body {
-  padding: 0 !important;
-}
-
-/* align header of Drawer with header of page */
-.menu_drawer .ant-drawer-header {
-  padding: 14px 24px !important;
+  display: none !important;
+  background: #f0f0f0;
+  border: none;
+  color: #030303;
 }
 
 @media (max-width: 767px) {
-  .menu__mobile-button {
-    display: inline-block !important;
+  .menu {
+    height: 48px; /* 모바일에서 헤더 높이를 약간 줄임 (유튜브 스타일) */
+    padding: 0 8px; /* 좌우 여백 살짝 축소 */
+  }
+
+  .menu__logo {
+    margin-right: 0; /* 로고 마진 제거 */
+  }
+
+  .menu__logo a {
+    padding: 0 8px; /* 로고 클릭 영역 조절 */
+  }
+
+  .logo-img {
+    height: 35px; /* 모바일 로고 사이즈 */
+  }
+
+  .menu__container {
+    display: flex;
+    justify-content: flex-end; /* ⭐ 컨테이너 내부 아이템(버튼)을 오른쪽 끝으로 보냄 */
   }
 
   .menu_left,
   .menu_rigth {
-    display: none;
+    display: none; /* 데스크탑 메뉴 숨김 */
   }
 
-  .menu__logo a {
-    margin-left: -20px;
+  .menu__mobile-button {
+    display: block !important; /* 햄버거 버튼 표시 */
+    background: transparent; /* 배경 투명 */
+    border: none;
+    box-shadow: none;
+    color: #030303;
+    font-size: 20px; /* 아이콘 크기 확대 */
+    height: 40px;
+    width: 40px;
+    padding: 0;
+    margin-top: 0; /* 중앙 정렬을 위해 마진 제거 */
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
   }
 
-  .menu__container .ant-menu-item,
-  .menu__container .ant-menu-submenu-title {
-    padding: 1px 20px;
-  }
-
-  .menu__logo a {
-    padding: 10px 20px;
+  /* 버튼 클릭 시 파란색 배경 방지 */
+  .menu__mobile-button:focus,
+  .menu__mobile-button:active {
+    background: transparent;
   }
 }
