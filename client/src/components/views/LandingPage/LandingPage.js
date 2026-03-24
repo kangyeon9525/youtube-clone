@@ -2,23 +2,33 @@ import React, { useEffect, useState } from "react";
 import { FaCode } from "react-icons/fa";
 import { Card, Icon, Avactoar, Col, Typography, Row, Avatar } from "antd";
 import Axios from "axios";
-
+import { useSelector } from "react-redux";
 import moment from "moment";
 const { Title } = Typography;
 const { Meta } = Card;
 
 function LandingPage() {
   const [Video, setVideo] = useState([]);
+  // 리덕스에서 유저 정보 가져오기
+  const user = useSelector((state) => state.user);
 
   useEffect(() => {
-    Axios.get("/api/video/getVideos").then((response) => {
+    // 유저 정보가 로드될 때까지 기다리거나, 비로그인 상태 대응을 위해 조건을 겁니다.
+    const userId = user.userData ? user.userData._id : null;
+
+    const variables = {
+      userId: userId,
+    };
+
+    // Axios.get -> Axios.post로 변경하여 userId 전달
+    Axios.post("/api/video/getVideos", variables).then((response) => {
       if (response.data.success) {
         setVideo(response.data.videos);
       } else {
         alert("비디오 가져오기를 실패 했습니다.");
       }
     });
-  }, []);
+  }, [user.userData]); // 유저 정보가 바뀔 때(로그인 시) 다시 실행
 
   const renderCards = Video.map((video, index) => {
     var minutes = Math.floor(video.duration / 60);
