@@ -1,12 +1,12 @@
 import Axios from "axios";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import { Avatar, Input, Button, Divider } from "antd";
 import SingleComment from "./SingleComment";
 import ReplyComment from "./ReplyComment";
 
 function Comment(props) {
   const videoId = props.postId;
-
   const user = useSelector((state) => state.user);
   const [commentValue, setCommentValue] = useState("");
 
@@ -16,7 +16,6 @@ function Comment(props) {
 
   const onSubmit = (event) => {
     event.preventDefault();
-
     const variables = {
       content: commentValue,
       writer: user.userData._id,
@@ -25,7 +24,6 @@ function Comment(props) {
 
     Axios.post("/api/comment/saveComment", variables).then((response) => {
       if (response.data.success) {
-        console.log(response.data.result);
         setCommentValue("");
         props.refreshFunction(response.data.result);
       } else {
@@ -37,14 +35,73 @@ function Comment(props) {
   return (
     <div>
       <br />
-      <p> Replies</p>
-      <hr />
-      {/* Comment lists*/}
+      {/* 댓글 개수 표시 */}
+      <p style={{ fontSize: "16px", fontWeight: "bold" }}>
+        댓글 {props.commentLists && props.commentLists.length}개
+      </p>
+
+      {/* 루트 댓글 입력창 - 유튜브 스타일 */}
+      <div style={{ display: "flex", marginTop: "20px", marginBottom: "40px" }}>
+        <Avatar
+          src={user.userData && user.userData.image}
+          style={{ width: "40px", height: "40px" }}
+        />
+        <form
+          style={{
+            display: "flex",
+            flex: 1,
+            flexDirection: "column",
+            marginLeft: "15px",
+          }}
+          onSubmit={onSubmit}
+        >
+          <Input.TextArea
+            style={{
+              width: "100%",
+              borderRadius: "0",
+              border: "none",
+              borderBottom: "1px solid #ccc",
+              padding: "5px 0",
+            }}
+            onChange={handleClick}
+            value={commentValue}
+            placeholder="댓글 추가..."
+            autoSize={{ minRows: 1 }}
+          />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginTop: "10px",
+            }}
+          >
+            <Button
+              style={{ border: "none", background: "none" }}
+              onClick={() => setCommentValue("")}
+            >
+              취소
+            </Button>
+            <Button
+              style={{
+                borderRadius: "20px",
+                backgroundColor: commentValue ? "#065fd4" : "#f2f2f2",
+                color: commentValue ? "white" : "#909090",
+              }}
+              disabled={!commentValue}
+              onClick={onSubmit}
+            >
+              댓글
+            </Button>
+          </div>
+        </form>
+      </div>
+
+      {/* 댓글 목록 */}
       {props.commentLists &&
         props.commentLists.map(
           (comment, idx) =>
             !comment.responseTo && (
-              <React.Fragment>
+              <React.Fragment key={idx}>
                 <SingleComment
                   refreshFunction={props.refreshFunction}
                   comment={comment}
@@ -59,20 +116,6 @@ function Comment(props) {
               </React.Fragment>
             ),
         )}
-
-      {/* Root Comment Form */}
-      <form style={{ display: "flex" }} onSubmit={onSubmit}>
-        <textarea
-          style={{ width: "100%", borderRadius: "5px" }}
-          onChange={handleClick}
-          value={commentValue}
-          placeholder="코멘트를 작성해 주세요"
-        />
-        <br />
-        <button style={{ width: "20%", height: "52px" }} onClick={onSubmit}>
-          Submit
-        </button>
-      </form>
     </div>
   );
 }
