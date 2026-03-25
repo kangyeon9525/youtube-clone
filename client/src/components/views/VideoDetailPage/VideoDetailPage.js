@@ -58,123 +58,119 @@ function VideoDetailPage(props) {
     );
 
     return (
-      <Row gutter={[24, 24]} style={{ padding: "20px 5%" }}>
-        <Col lg={17} xs={24}>
-          <div style={{ width: "100%" }}>
-            {/* 비디오 플레이어 */}
-            <video
-              style={{
-                width: "100%",
-                borderRadius: "12px",
-                backgroundColor: "#000",
-              }}
-              src={`http://localhost:5000/${VideoDetail.filePath}`}
-              controls
-              onEnded={onVideoEnded} // 영상 종료 시 실행
-            />
+      <div style={{ width: "100%", backgroundColor: "#fff" }}>
+        <Row
+          gutter={[24, 24]}
+          style={{
+            padding: "20px 2%", // 패딩을 살짝 줄임
+            maxWidth: "1400px", // 너무 퍼지지 않게 최대 너비 설정
+            margin: "0 auto", // 중앙 정렬
+          }}
+        >
+          {/* 본문 영역 (비디오 + 댓글) */}
+          <Col lg={16} xl={17} xs={24}>
+            <div style={{ width: "100%" }}>
+              <video
+                style={{
+                  width: "100%",
+                  borderRadius: "12px",
+                  backgroundColor: "#000",
+                }}
+                src={`http://localhost:5000/${VideoDetail.filePath}`}
+                controls
+                onEnded={onVideoEnded}
+              />
 
-            {/* 제목 영역 */}
-            <Title
-              level={3}
-              style={{ marginTop: "15px", marginBottom: "10px" }}
-            >
-              {VideoDetail.title}
-            </Title>
+              <Title
+                level={3}
+                style={{ marginTop: "15px", marginBottom: "10px" }}
+              >
+                {VideoDetail.title}
+              </Title>
 
-            {/* 채널정보 및 버튼 영역 (유튜브 스타일 핵심) */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexWrap: "wrap",
-              }}
-            >
-              {/* 채널정보 영역 */}
+              {/* 채널 정보 및 버튼 영역 */}
               <div
                 style={{
                   display: "flex",
+                  justifyContent: "space-between",
                   alignItems: "center",
-                  marginBottom: "10px",
+                  flexWrap: "wrap",
+                  marginBottom: "15px",
                 }}
               >
-                <Avatar size={44} src={VideoDetail.writer.image} />
-                <div
-                  style={{
-                    marginLeft: "12px",
-                    display: "flex",
-                    flexDirection: "column",
-                    marginRight: "16px",
-                  }}
-                >
-                  <Text strong style={{ fontSize: "16px", color: "#0f0f0f" }}>
-                    {VideoDetail.writer.name}
-                  </Text>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <Avatar size={44} src={VideoDetail.writer.image} />
+                  <div
+                    style={{
+                      marginLeft: "12px",
+                      display: "flex",
+                      flexDirection: "column",
+                      marginRight: "16px",
+                    }}
+                  >
+                    <Text strong style={{ fontSize: "16px", color: "#0f0f0f" }}>
+                      {VideoDetail.writer.name}
+                    </Text>
+                  </div>
+                  <div>{subscribeButton}</div>
                 </div>
 
-                {/* 구독 버튼 및 집계 숫자 */}
-                <div>{subscribeButton}</div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    backgroundColor: "#f2f2f2",
+                    padding: "6px 16px",
+                    borderRadius: "20px",
+                  }}
+                >
+                  <LikeDislikes
+                    video
+                    userId={localStorage.getItem("userId")}
+                    videoId={videoId}
+                  />
+                </div>
               </div>
 
-              {/* 좋아요 버튼 영역 (이미 수정된 알약 스타일) */}
+              {/* 설명란 */}
               <div
                 style={{
-                  display: "flex",
-                  alignItems: "center",
                   backgroundColor: "#f2f2f2",
-                  padding: "6px 16px",
-                  borderRadius: "20px",
-                  marginBottom: "10px",
+                  padding: "12px",
+                  borderRadius: "12px",
+                  fontSize: "14px",
                 }}
               >
-                <LikeDislikes
-                  video
-                  userId={localStorage.getItem("userId")}
-                  videoId={videoId}
-                />
+                <Text strong>{VideoDetail.views.toLocaleString()} views</Text>
+                <br />
+                <pre
+                  style={{
+                    whiteSpace: "pre-wrap",
+                    border: "none",
+                    background: "none",
+                    padding: 0,
+                    marginTop: "5px",
+                  }}
+                >
+                  {VideoDetail.description}
+                </pre>
               </div>
+
+              <Divider />
+              <Comment
+                refreshFunction={refreshFunction}
+                commentLists={Comments}
+                postId={videoId}
+              />
             </div>
+          </Col>
 
-            {/* 설명란 상자 */}
-            <div
-              style={{
-                backgroundColor: "#f2f2f2",
-                padding: "12px",
-                borderRadius: "12px",
-                marginTop: "15px",
-                fontSize: "14px",
-              }}
-            >
-              <Text strong>{VideoDetail.views} views</Text>
-              <br />
-              <pre
-                style={{
-                  whiteSpace: "pre-wrap",
-                  border: "none",
-                  background: "none",
-                  padding: 0,
-                }}
-              >
-                {VideoDetail.description}
-              </pre>
-            </div>
-
-            <Divider />
-
-            {/* 댓글 영역 */}
-            <Comment
-              refreshFunction={refreshFunction}
-              commentLists={Comments}
-              postId={videoId}
-            />
-          </div>
-        </Col>
-
-        {/* 우측 추천 영상 */}
-        <Col lg={7} xs={24}>
-          <SideVideo />
-        </Col>
-      </Row>
+          {/* 우측 추천 영상 (사이드바) - 여백을 없애서 꽉 차게 함 */}
+          <Col lg={8} xl={7} xs={24} style={{ paddingLeft: "10px" }}>
+            <SideVideo />
+          </Col>
+        </Row>
+      </div>
     );
   } else {
     return (
