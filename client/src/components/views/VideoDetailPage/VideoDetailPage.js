@@ -37,6 +37,17 @@ function VideoDetailPage(props) {
     setComments(Comments.concat(newComment));
   };
 
+  const onVideoEnded = () => {
+    Axios.post("/api/video/updateViews", variable).then((response) => {
+      if (response.data.success) {
+        // UI상에서도 조회수가 즉시 반영되도록 상태 업데이트 (선택 사항)
+        setVideoDetail({ ...VideoDetail, views: response.data.views });
+      } else {
+        console.error("조회수 업데이트에 실패했습니다.");
+      }
+    });
+  };
+
   if (VideoDetail.writer) {
     const subscribeButton = VideoDetail.writer._id !==
       localStorage.getItem("userId") && (
@@ -59,6 +70,7 @@ function VideoDetailPage(props) {
               }}
               src={`http://localhost:5000/${VideoDetail.filePath}`}
               controls
+              onEnded={onVideoEnded} // 영상 종료 시 실행
             />
 
             {/* 제목 영역 */}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FaCode } from "react-icons/fa";
-import { Card, Icon, Avactoar, Col, Typography, Row, Avatar } from "antd";
+import { Card, Col, Typography, Row, Avatar } from "antd";
 import Axios from "axios";
 import { useSelector } from "react-redux";
 import moment from "moment";

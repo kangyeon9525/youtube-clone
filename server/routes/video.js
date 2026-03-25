@@ -147,4 +147,17 @@ router.post("/thumbnail", (req, res) => {
       });
   });
 });
+
+router.post("/updateViews", (req, res) => {
+  // $inc 연산자를 사용하여 views 필드를 1 증가시킵니다.
+  Video.findOneAndUpdate(
+    { _id: req.body.videoId },
+    { $inc: { views: 1 } },
+    { new: true }, // 업데이트된 후의 도큐먼트를 반환받음
+  ).exec((err, video) => {
+    if (err) return res.status(400).json({ success: false, err });
+    return res.status(200).json({ success: true, views: video.views });
+  });
+});
+
 module.exports = router;
